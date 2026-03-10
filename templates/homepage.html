@@ -2,9 +2,359 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>SYC - Sell Your Car</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sell_any_car | Live Used Car Bidding</title>
+    <style>
+        /* CSS Variables for consistent theming */
+        :root {
+            --primary-color: #1e3a8a; /* Deep Blue */
+            --accent-color: #e11d48; /* Crimson Red for Live elements */
+            --bg-color: #f3f4f6;
+            --text-dark: #1f2937;
+            --text-light: #ffffff;
+            --card-bg: #ffffff;
+        }
+
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        /* Navigation */
+        nav {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 5%;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        .logo span {
+            color: var(--accent-color);
+        }
+
+        .nav-links {
+            list-style: none;
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #93c5fd;
+        }
+
+        .btn-sell {
+            background-color: var(--accent-color);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(30, 58, 138, 0.8), rgba(30, 58, 138, 0.8)), url('https://images.unsplash.com/photo-1552519507-da3b142c6e3d?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80') center/cover;
+            height: 60vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: var(--text-light);
+            padding: 0 20px;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+        }
+
+        .btn-main {
+            background-color: var(--accent-color);
+            color: var(--text-light);
+            padding: 1rem 2rem;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn-main:hover {
+            background-color: #be123c;
+        }
+
+        /* Live Auctions Section */
+        .auctions {
+            padding: 4rem 5%;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .section-header h2 {
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Pulsing Live Indicator */
+        .live-dot {
+            height: 12px;
+            width: 12px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0.7); }
+            70% { box-shadow: 0 0 0 10px rgba(225, 29, 72, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(225, 29, 72, 0); }
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        /* Car Card */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+        }
+
+        .timer-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-weight: bold;
+            font-family: monospace;
+            font-size: 1.1rem;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .card-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .car-details {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .bid-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .current-bid span {
+            display: block;
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        .current-bid strong {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+
+        .btn-bid {
+            width: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 0.8rem;
+            border: none;
+            border-radius: 5px;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .btn-bid:hover {
+            background-color: #1e40af;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #111827;
+            color: white;
+            text-align: center;
+            padding: 2rem 5%;
+            margin-top: 2rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none; /* In a real app, add a hamburger menu here */
+            }
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
 </head>
 <body>
-    <h1>Hello Customer. Welcome to SELL YOUR CAR</h1>
+
+    <nav>
+        <div class="logo">sell_any_<span>car</span></div>
+        <ul class="nav-links">
+            <li><a href="#">Home</a></li>
+            <li><a href="{% url 'auction' %}">Live Auctions</a></li>
+            <li><a href="#">Past Results</a></li>
+            <li><a href="#" class="btn-sell">Sell Your Car</a></li>
+            <li><a href="#">Login</a></li>
+        </ul>
+    </nav>
+
+    <header class="hero">
+        <h1>Real-Time Bidding. Real Cars.</h1>
+        <p>Join the thrill of live auctions. Buy your dream car at your price, or sell your car to the highest bidder in minutes.</p>
+        <a href="{% url 'auction' %}" class="btn-main">View Live Auctions</a>
+    </header>
+
+    <section id="auctions" class="auctions">
+        <div class="section-header">
+            <h2><span class="live-dot"></span> Live Bidding Now</h2>
+            <a href="#" style="color: var(--primary-color); text-decoration: none; font-weight: bold;">View All &rarr;</a>
+        </div>
+
+        <div class="grid">
+            <div class="card">
+                <div class="timer-badge">00:04:12</div>
+                <img src="https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="2021 BMW 3 Series" class="card-img">
+                <div class="card-content">
+                    <h3 class="card-title">2021 BMW 3 Series 330i</h3>
+                    <p class="car-details">45,000 miles • Clean Title • Automatic</p>
+                    <div class="bid-info">
+                        <div class="current-bid">
+                            <span>Current Bid</span>
+                            <strong>$24,500</strong>
+                        </div>
+                        <div style="text-align: right;">
+                            <span style="font-size: 0.8rem; color: #6b7280;">Bids</span>
+                            <strong style="display: block;">14</strong>
+                        </div>
+                    </div>
+                    <button class="btn-bid">Place Bid</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="timer-badge" style="color: var(--accent-color);">00:00:45</div>
+                <img src="https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="2018 Ford Mustang" class="card-img">
+                <div class="card-content">
+                    <h3 class="card-title">2018 Ford Mustang GT</h3>
+                    <p class="car-details">32,100 miles • Minor Scratch • Manual</p>
+                    <div class="bid-info">
+                        <div class="current-bid">
+                            <span>Current Bid</span>
+                            <strong>$31,200</strong>
+                        </div>
+                        <div style="text-align: right;">
+                            <span style="font-size: 0.8rem; color: #6b7280;">Bids</span>
+                            <strong style="display: block;">28</strong>
+                        </div>
+                    </div>
+                    <button class="btn-bid">Place Bid</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="timer-badge">00:15:30</div>
+                <img src="https://images.unsplash.com/photo-1580273916550-e323be2ae537?q=80&w=464&&auto=format&fit=crop&w=600&q=80" alt="2022 Tesla Model 3" class="card-img">
+                <div class="card-content">
+                    <h3 class="card-title">2022 Tesla Model 3 Long Range</h3>
+                    <p class="car-details">12,000 miles • Clean Title • EV</p>
+                    <div class="bid-info">
+                        <div class="current-bid">
+                            <span>Current Bid</span>
+                            <strong>$38,000</strong>
+                        </div>
+                        <div style="text-align: right;">
+                            <span style="font-size: 0.8rem; color: #6b7280;">Bids</span>
+                            <strong style="display: block;">6</strong>
+                        </div>
+                    </div>
+                    <button class="btn-bid">Place Bid</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <h2>sell_any_car</h2>
+        <p>&copy; 2026 sell_any_car Inc. All rights reserved.</p>
+    </footer>
+
 </body>
 </html>
