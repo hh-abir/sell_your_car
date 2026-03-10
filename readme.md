@@ -1,4 +1,4 @@
-```markdown
+
 # sell_any_car 🚗
 
 > ⚠️ **NOTICE: This project is currently under development.** Features, UI, and database structures are actively being built and are subject to change.
@@ -89,4 +89,3 @@ python manage.py runserver
 
 Once the server is running, open your web browser and go to `http://127.0.0.1:8000/` to view the site!
 
-```
